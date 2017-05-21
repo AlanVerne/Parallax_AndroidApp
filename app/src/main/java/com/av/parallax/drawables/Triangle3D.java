@@ -1,4 +1,4 @@
-package com.av.parallax;
+package com.av.parallax.drawables;
 
 /**
  * Created by Alan on 19 May 2017.

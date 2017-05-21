@@ -1,4 +1,4 @@
-package com.av.parallax;
+package com.av.parallax.drawables;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -10,7 +10,6 @@ import android.graphics.Path;
  */
 
 public class Path3D extends Drawable3D {
-    protected final int color;
     protected final float strokeWidthK = 1f / 5f;
     protected final Path path = new Path();
 
@@ -18,9 +17,7 @@ public class Path3D extends Drawable3D {
         this(x, y, z, w, h, 0, c);
     }
     public Path3D(int x, int y, int z, int w, int h, float rotate, int c) {
-        super(x, y, z, w, h);
-
-        color = c;
+        super(x, y, z, w, h, c);
 
         float nw = w * (1f - strokeWidthK);
         float nh = h * (1f - strokeWidthK);
@@ -38,7 +35,7 @@ public class Path3D extends Drawable3D {
     }
 
     @Override
-    void draw(Canvas c, Paint p, float dx, float dy, float k) {
+    public void draw(Canvas c, Paint p, float dx, float dy, float k) {
         p.setColor(color);
 
         p.setStyle(Paint.Style.STROKE);

@@ -8,7 +8,7 @@
     android:background="#000000"
     tools:context="com.av.parallax.MainActivity">
 
-    <com.av.parallax.ParallaxedSceneView
+    <com.av.parallax.scenes.Demo1
         android:id="@+id/psv"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

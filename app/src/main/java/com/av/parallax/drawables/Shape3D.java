@@ -1,8 +1,7 @@
-package com.av.parallax;
+package com.av.parallax.drawables;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 
 /**
  * Created by Alan on 19 May 2017.
@@ -17,7 +16,7 @@ public class Shape3D extends Path3D {
     }
 
     @Override
-    void draw(Canvas c, Paint p, float dx, float dy, float k) {
+    public void draw(Canvas c, Paint p, float dx, float dy, float k) {
         p.setColor(color);
 
         p.setStyle(Paint.Style.FILL_AND_STROKE);

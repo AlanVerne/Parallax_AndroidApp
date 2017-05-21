@@ -1,4 +1,4 @@
-package com.av.parallax;
+package com.av.parallax.scenes;
 
 import android.content.Context;
 import android.graphics.PointF;
@@ -28,7 +28,6 @@ public class ParallaxHelper {
     private final Sensor sensor;
 
     private double phoneDistance = 3000;
-    private double goBackV = 0;
     private double angleX = 0, angleY = 0;
     private double userX = 0, userY = 0, userZ = 0;
     private double w, h;
@@ -40,8 +39,7 @@ public class ParallaxHelper {
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (setDeviceAngles(event)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    v.postInvalidateOnAnimation();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) v.postInvalidateOnAnimation();
                 else v.postInvalidate();
             }
         }

@@ -1,8 +1,4 @@
-package com.av.parallax;
-
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
+package com.av.parallax.drawables;
 
 /**
  * Created by Alan on 19 May 2017.

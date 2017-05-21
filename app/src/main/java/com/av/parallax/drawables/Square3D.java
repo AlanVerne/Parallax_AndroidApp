@@ -1,4 +1,4 @@
-package com.av.parallax;
+package com.av.parallax.drawables;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -9,15 +9,12 @@ import android.graphics.RectF;
  */
 
 public class Square3D extends Drawable3D {
-    private final int color;
-
     public Square3D(int x, int y, int z, int w, int h, int c) {
-        super(x, y, z, w, h);
-        color = c;
+        super(x, y, z, w, h, c);
     }
 
     @Override
-    void draw(Canvas c, Paint p, float dx, float dy, float k) {
+    public void draw(Canvas c, Paint p, float dx, float dy, float k) {
         float wkd2 = w*k/2;
         float hkd2 = h*k/2;
         //c.drawOval(new RectF(x+dx-wkd2, y+dy-hkd2, x+dx+wkd2, y+dy+hkd2), paint);

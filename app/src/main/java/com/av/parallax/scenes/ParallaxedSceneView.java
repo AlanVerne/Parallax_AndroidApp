@@ -1,16 +1,15 @@
-package com.av.parallax;
+package com.av.parallax.scenes;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.RectF;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.av.parallax.drawables.Drawable3D;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,12 +18,16 @@ import java.util.List;
  */
 
 public class ParallaxedSceneView extends View {
-    private final List<Drawable3D> items = new ArrayList<>();
-    private ParallaxHelper parallaxHelper;
+    protected final List<Drawable3D> items = new ArrayList<>();
+    protected ParallaxHelper parallaxHelper;
 
     public ParallaxedSceneView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         parallaxHelper = new ParallaxHelper(this);
+
+        fillScene();
+        sort();
     }
 
     public void stop() {
@@ -34,8 +37,18 @@ public class ParallaxedSceneView extends View {
         parallaxHelper.resume();
     }
 
+    public void fillScene() { }
+
     public void add(Drawable3D drawable3D) {
         items.add(drawable3D);
+    }
+
+    public List<Drawable3D> get(int x, int y) {
+        List<Drawable3D> l = new ArrayList<>();
+        for (Drawable3D item : items) {
+            if (item.x == x && item.y == y) l.add(item);
+        }
+        return l;
     }
 
     @Override
@@ -58,6 +71,6 @@ public class ParallaxedSceneView extends View {
     }
 
     public void sort() {
-        Collections.sort(items, (o1, o2) -> o1.z - o2.z);
+        Collections.sort(items, (o1, o2) -> Float.compare(o1.z, o2.z));
     }
 }
