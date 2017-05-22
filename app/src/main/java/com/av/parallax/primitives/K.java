@@ -1,12 +1,12 @@
-package com.av.parallax.drawables;
+package com.av.parallax.primitives;
 
 /**
  * Created by Alan on 19 May 2017.
  */
 
-public class K3D extends Path3D {
-    public K3D(int x, int y, int z, int w, int h, int c) {
-        super(x, y, z, w, h, c);
+public class K extends PathFPD {
+    public K(int w, int h, int rotate) {
+        super(w, h, rotate);
     }
 
     @Override

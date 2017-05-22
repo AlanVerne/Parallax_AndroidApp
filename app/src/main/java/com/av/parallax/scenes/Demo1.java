@@ -1,42 +1,82 @@
 package com.av.parallax.scenes;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 
-import com.av.parallax.drawables.Ellipse3D;
-import com.av.parallax.drawables.EmptyEllipse3D;
-import com.av.parallax.drawables.EmptySquare3D;
-import com.av.parallax.drawables.III3D;
-import com.av.parallax.drawables.K3D;
-import com.av.parallax.drawables.N3D;
-import com.av.parallax.drawables.Square3D;
-import com.av.parallax.drawables.T3D;
-import com.av.parallax.drawables.Triangle3D;
+import com.av.parallax.primitives.Ellipse;
+import com.av.parallax.primitives.EmptyEllipse;
+import com.av.parallax.primitives.EmptySquare;
+import com.av.parallax.primitives.IFlatPrimitiveDrawer;
+import com.av.parallax.primitives.III;
+import com.av.parallax.primitives.K;
+import com.av.parallax.primitives.N;
+import com.av.parallax.primitives.Square;
+import com.av.parallax.primitives.T;
+import com.av.parallax.primitives.Triangle;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 /**
  * Created by Alan on 21 May 2017.
  */
 
 public class Demo1 extends ParallaxedSceneView {
+    private static final Map<IFlatPrimitiveDrawer, Integer> PRIMITIVES = new HashMap<>();
+    private static final Map<Integer, IFlatPrimitiveDrawer> ORDERED_PRIMITIVES = new TreeMap<>();
+    private int primitivesSum = 0;
+
+    private boolean refillScene = false;
+
     public Demo1(Context context, AttributeSet attrs) {
         super(context, attrs);
         setOnTouchListener((v, event) -> {
-            items.clear();
-            fillScene();
-            sort();
-            invalidate();
+            refillScene = true;
             return true;
         });
     }
 
+    protected void fillPrimitivesMap(int size) {
+        PRIMITIVES.put(new III(size, size, 0), 4);
+        PRIMITIVES.put(new III(size, size, 90), 4);
+        PRIMITIVES.put(new Square(size, size, 0), 8);
+        PRIMITIVES.put(new EmptySquare(size, size, 0), 8);
+        PRIMITIVES.put(new Ellipse(size, size, 0), 8);
+        PRIMITIVES.put(new EmptyEllipse(size, size, 0), 8);
+        PRIMITIVES.put(new Triangle(size, size, 0), 2);
+        PRIMITIVES.put(new Triangle(size, size, 90), 2);
+        PRIMITIVES.put(new Triangle(size, size, 180), 2);
+        PRIMITIVES.put(new Triangle(size, size, 270), 2);
+
+        for (Map.Entry<IFlatPrimitiveDrawer, Integer> entry : PRIMITIVES.entrySet()) {
+            primitivesSum += entry.getValue();
+            ORDERED_PRIMITIVES.put(primitivesSum, entry.getKey());
+        }
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        if (refillScene) {
+            items.clear();
+            fillScene();
+            sort();
+            invalidate();
+            refillScene = false;
+        }
+        super.draw(canvas);
+    }
+
     @Override
     public void fillScene() {
-        Random rand = new Random();
-
         int grid = 80;
-        int r = 80 / 3;
+        int r = 80/3;
+
+        if (primitivesSum == 0) fillPrimitivesMap(r);
+
+        Random rand = new Random();
 
         int w = 4;
         int h = 9;
@@ -52,62 +92,27 @@ public class Demo1 extends ParallaxedSceneView {
         for (int x = -w; x <= w; x++) {
             for (int y = -h; y <= h; y++) {
                 if (y == 0 && x >= -2 && x <= 2) {
-                    if (x == -2) add(new N3D(x * grid, y * grid, 0, r, r, 0xffffffff));
-                    if (x == -1) add(new EmptySquare3D(x * grid, y * grid, 0, r, r, 0xffffffff));
-                    if (x == 0) add(new K3D(x * grid, y * grid, 0, r, r, 0xffffffff));
-                    if (x == 1) add(new III3D(x * grid, y * grid, 0, r, r, 0xffffffff));
-                    if (x == 2) add(new T3D(x * grid, y * grid, 0, r, r, 0xffffffff));
+                    if (x == -2) addFP(x * grid, y * grid, 0, 0xffffffff, new N(r, r, 0));
+                    if (x == -1) addFP(x * grid, y * grid, 0, 0xffffffff, new EmptySquare(r, r, 0));
+                    if (x == 0) addFP(x * grid, y * grid, 0, 0xffffffff, new K(r, r, 0));
+                    if (x == 1) addFP(x * grid, y * grid, 0, 0xffffffff, new III(r, r, 0));
+                    if (x == 2) addFP(x * grid, y * grid, 0, 0xffffffff, new T(r, r, 0));
                     continue;
                 }
 
-//                if (Math.abs(y) <= 1 && Math.abs(x) <= 3) {
-//                    continue;
-//                }
+                int primitiveI = rand.nextInt(primitivesSum + primitivesSum/2) + 1;
+                if (primitiveI > primitivesSum) continue;
+
+                IFlatPrimitiveDrawer primitive;
+                while ((primitive = ORDERED_PRIMITIVES.get(primitiveI++)) == null);
 
                 int z = -(rand.nextInt(4)) * r/2;
                 int dz = -(rand.nextInt(4)) * r/2;
 
-                if (rand.nextInt(4) == 0) {
-                    add(new Ellipse3D(x * grid, y * grid, z+dz*3, r, r, 0xff072677));
-                    add(new Ellipse3D(x * grid, y * grid, z+dz*2, r, r, 0xff1356cc));
-                    add(new Ellipse3D(x * grid, y * grid, z+dz, r, r, 0xff55a6ff));
-                    if (rand.nextInt(30) == 0) add(new Ellipse3D(x * grid, y * grid, z, r, r, 0xffffffff));
-                } else if (rand.nextInt(4) == 0) {
-                    add(new Square3D(x * grid, y * grid, z+dz*3, r, r, 0xff072677));
-                    add(new Square3D(x * grid, y * grid, z+dz*2, r, r, 0xff1356cc));
-                    add(new Square3D(x * grid, y * grid, z+dz, r, r, 0xff55a6ff));
-                    if (rand.nextInt(30) == 0) add(new Square3D(x * grid, y * grid, z, r, r, 0xffffffff));
-                } else if (rand.nextInt(4) == 0) {
-                    add(new EmptyEllipse3D(x * grid, y * grid, z+dz*3, r, r, 0xff072677));
-                    add(new EmptyEllipse3D(x * grid, y * grid, z+dz*2, r, r, 0xff1356cc));
-                    add(new EmptyEllipse3D(x * grid, y * grid, z+dz, r, r, 0xff55a6ff));
-                    if (rand.nextInt(30) == 0) add(new EmptyEllipse3D(x * grid, y * grid, z, r, r, 0xffffffff));
-                } else if (rand.nextInt(4) == 0) {
-                    add(new EmptySquare3D(x * grid, y * grid, z+dz*3, r, r, 0xff072677));
-                    add(new EmptySquare3D(x * grid, y * grid, z+dz*2, r, r, 0xff1356cc));
-                    add(new EmptySquare3D(x * grid, y * grid, z+dz, r, r, 0xff55a6ff));
-                    if (rand.nextInt(30) == 0) add(new EmptySquare3D(x * grid, y * grid, z, r, r, 0xffffffff));
-                } else if (rand.nextInt(8) == 0) {
-                    float rotate = rand.nextInt(4) * 90;
-                    add(new Triangle3D(x * grid, y * grid, z+dz*3, r, r, rotate, 0xff072677));
-                    add(new Triangle3D(x * grid, y * grid, z+dz*2, r, r, rotate, 0xff1356cc));
-                    add(new Triangle3D(x * grid, y * grid, z+dz, r, r, rotate, 0xff55a6ff));
-                    if (rand.nextInt(30) == 0) add(new Triangle3D(x * grid, y * grid, z, r, r, rotate, 0xffffffff));
-                } else if (rand.nextInt(8) == 0) {
-                    float rotate = rand.nextBoolean() ? 90 : 0;
-                    add(new III3D(x * grid, y * grid, z+dz*3, r, r, rotate, 0xff072677));
-                    add(new III3D(x * grid, y * grid, z+dz*2, r, r, rotate, 0xff1356cc));
-                    add(new III3D(x * grid, y * grid, z+dz, r, r, rotate, 0xff55a6ff));
-                    if (rand.nextInt(30) == 0) add(new III3D(x * grid, y * grid, z, r, r, rotate, 0xffffffff));
-                } else if (rand.nextInt(12) == 0) {
-                    add(new N3D(x * grid, y * grid, z+dz*3, r, r, 0xff072677));
-                    add(new N3D(x * grid, y * grid, z+dz*2, r, r, 0xff1356cc));
-                    add(new N3D(x * grid, y * grid, z+dz, r, r, 0xff55a6ff));
-                } else if (rand.nextInt(12) == 0) {
-                    add(new K3D(x * grid, y * grid, z+dz*3, r, r, 0xff072677));
-                    add(new K3D(x * grid, y * grid, z+dz*2, r, r, 0xff1356cc));
-                    add(new K3D(x * grid, y * grid, z+dz, r, r, 0xff55a6ff));
-                }
+                addFP(x * grid, y * grid, z+dz*3, 0xff072677, primitive);
+                addFP(x * grid, y * grid, z+dz*2, 0xff1356cc, primitive);
+                addFP(x * grid, y * grid, z+dz, 0xff55a6ff, primitive);
+                if (rand.nextInt(10) == 0) addFP(x * grid, y * grid, z, 0xffffffff, primitive);
             }
         }
     }

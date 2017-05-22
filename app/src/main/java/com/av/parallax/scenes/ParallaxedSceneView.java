@@ -8,6 +8,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.av.parallax.drawables.Drawable3D;
+import com.av.parallax.drawables.FlatPrimitive3D;
+import com.av.parallax.primitives.IFlatPrimitiveDrawer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +44,9 @@ public class ParallaxedSceneView extends View {
     public void add(Drawable3D drawable3D) {
         items.add(drawable3D);
     }
+    public void addFP(float x, float y, float z, int color, IFlatPrimitiveDrawer fp) {
+        items.add(new FlatPrimitive3D(x, y, z, color, fp));
+    }
 
     public List<Drawable3D> get(int x, int y) {
         List<Drawable3D> l = new ArrayList<>();
@@ -66,7 +71,7 @@ public class ParallaxedSceneView extends View {
 
         for (Drawable3D item : items) {
             PointF pointF = parallaxHelper.applyParallax(item.x, item.y, item.z);
-            item.draw(canvas, p, pointF.x+dx, pointF.y+dy, (float) parallaxHelper.getK(item.z));
+            item.draw(canvas, pointF.x+dx, pointF.y+dy, (float) parallaxHelper.getK(item.z));
         }
     }
 

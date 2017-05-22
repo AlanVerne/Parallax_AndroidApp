@@ -47,28 +47,28 @@ public class MainActivity extends AppCompatActivity {
             int elapsedTime = msg.what;
             List<Drawable3D> l = parallaxedSceneView.get(3 * 80, 8 * 80);
             for (Drawable3D d : l) {
-                if (elapsedTime == 0 || elapsedTime == 8*10 || elapsedTime == 11*10) {
+                if (elapsedTime == 0 || elapsedTime == 7*10 || elapsedTime == 10*10 || elapsedTime == 9*10) {
                     d.z = 40;
                 }
                 else {
                     d.z = d.z * 0.9f;
                 }
-                if (d.z > 20) d.color = 0xffff0088;
-                else d.color = 0xff55a6ff;
+//                if (d.z > 20) d.color = 0xffff0088;
+//                else d.color = 0xff55a6ff;
             }
             l = parallaxedSceneView.get(2 * 80, 8 * 80);
             for (Drawable3D d : l) {
                 if (elapsedTime == 4*10 || elapsedTime == 12*10) d.z = 40;
                 else d.z = d.z * 0.9f;
-                if (d.z > 20) d.color = 0xffff0088;
-                else d.color = 0xff55a6ff;
+//                if (d.z > 20) d.color = 0xffff0088;
+//                else d.color = 0xff55a6ff;
             }
             l = parallaxedSceneView.get(1 * 80, 8 * 80);
             for (Drawable3D d : l) {
-                if (elapsedTime == 2*10 || elapsedTime == 6*10 || elapsedTime == 10*10 || elapsedTime == 14*10) d.z = 40;
+                if (elapsedTime % 20 == 0) d.z = 40;
                 else d.z = d.z * 0.9f;
-                if (d.z > 20) d.color = 0xff00ffff;
-                else d.color = 0xff55a6ff;
+//                if (d.z > 20) d.color = 0xff00ffff;
+//                else d.color = 0xff55a6ff;
             }
         }
     };
@@ -82,6 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 if (elapsedTime >= 16*10) elapsedTime = 0;
                 mHandler.obtainMessage(elapsedTime).sendToTarget();
             }
-        }, 0, 1000 / 100);
+        }, 0, 1000 / 60);
     }
 }
